@@ -9,6 +9,8 @@
 #define WORK_TAG 1
 #define FINISH_TAG 2
 
+char permutation[9];
+
 bool isPrime(int n) { //efficient function to check if a number is prime or not
     if (n <= 1) {
         return false;
@@ -53,25 +55,15 @@ int count_prime_divisors(long n)
     return count;
 }
 
-void generate_anagram_set(char *str, char *anagram_set)
+void generate_anagram_set(int n, int *anagram_set)
 {
-    char arr[256] = {0}; //array of frequencies
-    int anagram_length=0;
-    for(int i=0;i<strlen(str);i++)
+    for(int i=0;i<n;i++)
     {
-        arr[str[i]-'A']++;
+        anagram_set[i]=i;
     }
-    for(int i=0;i<80;i++)
-    {
-        if(arr[i]!=0)
-        {
-            anagram_set[anagram_length++]=i+'A';
-        }
-    }
-    anagram_set[anagram_length]='\0';
 }
 
-int valid(char *x,int k)
+int valid(char *str,int *x,int k)
 {
     for(int i=0;i<k;i++)
     {
@@ -100,22 +92,26 @@ int factorial(int n)
     return tmp;
 }
 
-void generate_permutations(char *no_duplicates_set,char *permutations_set,char *x,int k,int n)
+void generate_permutations(int *anagram_set,char *str,char *permutations_set,int *x,int k,int n)
 {
     for(int i = 0;i < n;i++)
     {
-        x[k]=no_duplicates_set[i];
-        if(valid(x,k))
+        x[k]=anagram_set[i];
+        if(valid(str,x,k))
         {
             if(solution(k,n))
             {
-                x[k+1]='\n';
-                x[k+2]='\0';
-                strcat(permutations_set,x);
+                for(int i=0;i<n;i++)
+                {
+                    permutation[i]=str[x[i]];
+                }
+                permutation[n]='\0';
+                strcat(permutations_set,permutation);
+                strcat(permutations_set,"\n");
             }
             else
             {
-                generate_permutations(no_duplicates_set, permutations_set, x, k+1, n);
+                generate_permutations(anagram_set, str, permutations_set, x, k+1, n);
             }
         }
     }
@@ -123,14 +119,14 @@ void generate_permutations(char *no_duplicates_set,char *permutations_set,char *
 
 char *generate_anagrams(char *str)
 {
-    char no_duplicates_set[10] = {0};
-    generate_anagram_set(str,no_duplicates_set);
+    int anagram_set[8] = {0};
+    int n = strlen(str);
+    generate_anagram_set(8,anagram_set);
     //printf("%s\n",no_duplicates_set);
-    int n = strlen(no_duplicates_set);
     char *permutations_set=(char *)malloc((factorial(8) * (8+1) + 1) * sizeof(char));
-    char x[10] = {0};
+    int x[10] = {0};
     permutations_set[0]='\0';
-    generate_permutations(no_duplicates_set,permutations_set,x,0,n);
+    generate_permutations(anagram_set,str,permutations_set,x,0,n);
     return permutations_set;
 }
 
@@ -160,14 +156,22 @@ int main(int argc, char **argv)
         FILE *fp1 = NULL;
         FILE *fp2 = NULL;
         //char *permutations_set=(char *)malloc((factorial(8) * (8+1) + 1) * sizeof(char));
-        if((fp1=fopen("requests_file.txt","r"))==NULL)
+        if((fp1=fopen("requests_file2.txt","r"))==NULL)
         {
             printf("Error opening the requests file\n");
+            for(int i=1;i<=numtasks;i++)
+            {
+                MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
+            }
             MPI_Finalize();
         }
         if((fp2=fopen("log_file.txt","w+"))==NULL)
         {
             printf("Error opening the log file\n");
+            for(int i=1;i<=numtasks;i++)
+            {
+                MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
+            }
             MPI_Finalize();
         }
 
@@ -181,8 +185,6 @@ int main(int argc, char **argv)
                 strcat(commands_string," ");
                 strcat(commands_string,amount_of_time);
                 long time = strtol(amount_of_time,NULL,10);
-                sprintf(log_message, "Timestamp %.03f: '%s' received from worker %d\n", MPI_Wtime(), commands_string, worker);
-                fprintf(fp2,"%s",log_message);
                 //printf("%s\n",commands_string);
                 usleep(time * 250000);
             }
@@ -230,12 +232,20 @@ int main(int argc, char **argv)
             if((cli=fopen(client_file,"a+"))==NULL)
             {
                 printf("Error opening the client file\n");
+                for(int i=1;i<=numtasks;i++)
+                {
+                    MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
+                }
                 MPI_Finalize();
             }
             fprintf(cli,"%s\n",p);
             if(fclose(cli)!=0)
             {
                 printf("Error closing the client file\n");
+                for(int i=1;i<=numtasks;i++)
+                {
+                    MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
+                }
                 MPI_Finalize();
             }
             if(fscanf(fp1, "%s", command_type)==1)
@@ -293,6 +303,7 @@ int main(int argc, char **argv)
             printf("Error closing the log file\n");
             MPI_Finalize();
         }
+        MPI_Finalize();
     }
 
     else // the code for the workers
@@ -361,7 +372,6 @@ int main(int argc, char **argv)
                 break;
             }
         }
+        MPI_Finalize();
     }
-
-    MPI_Finalize();
 }
