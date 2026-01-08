@@ -1,0 +1,33 @@
+Timestamp 0.462: 'CLI0 PRIMEDIVISORS 452876' received from the command file
+Timestamp 0.463: 'CLI0 PRIMEDIVISORS 452876' sent to worker 1
+Timestamp 0.463: 'CLI1 ANAGRAMS tralala' received from the command file
+Timestamp 0.463: 'CLI1 ANAGRAMS tralala' sent to worker 2
+Timestamp 0.463: 'CLI2 PRIMEDIVISORS 129072' received from the command file
+Timestamp 0.463: 'CLI2 PRIMEDIVISORS 129072' sent to worker 3
+Timestamp 0.464: 'CLI1 ANAGRAMS tralala ' received from worker 2
+Timestamp 0.964: 'CLI3 PRIMES 2908764' received from the command file
+Timestamp 0.964: 'CLI3 PRIMES 2908764' sent to worker 2
+Timestamp 0.964: 'CLI2 PRIMEDIVISORS 129072 ' received from worker 3
+Timestamp 1.214: 'CLI4 PRIMES 10000987' received from the command file
+Timestamp 1.214: 'CLI4 PRIMES 10000987' sent to worker 3
+Timestamp 1.214: 'CLI0 PRIMEDIVISORS 452876 ' received from worker 1
+Timestamp 1.215: 'CLI5 PRIMES 12043876' received from the command file
+Timestamp 1.215: 'CLI5 PRIMES 12043876' sent to worker 1
+Timestamp 1.504: 'CLI3 PRIMES 2908764 ' received from worker 2
+Timestamp 1.505: 'CLI6 PRIMES 20876' received from the command file
+Timestamp 1.505: 'CLI6 PRIMES 20876' sent to worker 2
+Timestamp 1.505: 'CLI6 PRIMES 20876 ' received from worker 2
+Timestamp 1.505: 'CLI7 ANAGRAMS friend' received from the command file
+Timestamp 1.506: 'CLI7 ANAGRAMS friend' sent to worker 2
+Timestamp 1.506: 'CLI7 ANAGRAMS friend ' received from worker 2
+Timestamp 2.256: 'CLI8 ANAGRAMS sunshine' received from the command file
+Timestamp 2.256: 'CLI8 ANAGRAMS sunshine' sent to worker 2
+Timestamp 2.256: 'CLI8 ANAGRAMS sunshine ' received from worker 2
+Timestamp 2.256: 'CLI9 ANAGRAMS rainbow' received from the command file
+Timestamp 2.256: 'CLI9 ANAGRAMS rainbow' sent to worker 2
+Timestamp 2.259: 'CLI9 ANAGRAMS rainbow ' received from worker 2
+Timestamp 2.259: 'CLI10 PRIMES 3451629' received from the command file
+Timestamp 2.259: 'CLI10 PRIMES 3451629' sent to worker 2
+Timestamp 2.881: 'CLI10 PRIMES 3451629 ' received from worker 2
+Timestamp 3.953: 'CLI4 PRIMES 10000987 ' received from worker 3
+Timestamp 4.703: 'CLI5 PRIMES 12043876 ' received from worker 1

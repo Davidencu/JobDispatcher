@@ -9,14 +9,22 @@
 #define WORK_TAG 1
 #define FINISH_TAG 2
 
-bool isPrime(long n)
-{
-    if (n <= 1)
+bool isPrime(int n) { //efficient function to check if a number is prime or not
+    if (n <= 1) {
         return false;
-    for (long i = 2; i < n; i++)
-        {
-            if (n % i == 0) return false;
+    }
+    if (n == 2) {
+        return true;
+    }
+    if (n % 2 == 0) {
+        return false;
+    }
+
+    for (int i = 3; i * i <= n; i += 2) {
+        if (n % i == 0) {
+            return false; // Found a divisor, not prime.
         }
+    }
     return true;
 }
 
@@ -145,7 +153,7 @@ int main(int argc, char **argv)
 
     if (rank == 0) // the code for the master
     {
-        int all_tasks_done=0;
+        int active_workers=0;
         int worker=-1;
         char log_message[120];
 
@@ -163,7 +171,7 @@ int main(int argc, char **argv)
             MPI_Finalize();
         }
 
-        for(int i=1;i<numtasks;i++)
+        for(;active_workers<numtasks-1;)
         {
             fscanf(fp1,"%s",command_type);
             if(strcmp(command_type, "WAIT")==0)
@@ -190,21 +198,20 @@ int main(int argc, char **argv)
                 sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), commands_string);
                 fprintf(fp2,"%s",log_message);
                 //printf("%s\n",commands_string);
-                MPI_Send(commands_string,100,MPI_CHAR,i,WORK_TAG,MPI_COMM_WORLD);
-                sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), commands_string, i);
+                active_workers++;
+                MPI_Send(commands_string,50,MPI_CHAR,active_workers,WORK_TAG,MPI_COMM_WORLD);
+                sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), commands_string, active_workers);
                 fprintf(fp2,"%s",log_message);
             }
         }
 
-        while(!all_tasks_done)
+        while(active_workers)
         {
             MPI_Recv(char_result, (factorial(8) * (8+1) + 50 + 1), MPI_CHAR, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
-            //printf("%s",char_result);
             worker=status.MPI_SOURCE;
             char message[50];
             char client_id[7];
             char client_file[11];
-            int end_tasks=0;
             char *p = strtok(char_result," ");
             strcpy(client_id,p);
             strcpy(message,p);
@@ -233,7 +240,7 @@ int main(int argc, char **argv)
             }
             if(fscanf(fp1, "%s", command_type)==1)
             {
-                if(strcmp(command_type, "WAIT")==0)
+                while(strcmp(command_type, "WAIT")==0)
                 {
                     fscanf(fp1," %s\n",amount_of_time);
                     commands_string[0]='\0';
@@ -243,32 +250,34 @@ int main(int argc, char **argv)
                     long time = strtol(amount_of_time,NULL,10);
                     //printf("%s\n",commands_string);
                     usleep(time * 250000);
+                    if(fscanf(fp1, "%s", command_type)==1)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        MPI_Send(dummy,1,MPI_CHAR,worker,FINISH_TAG,MPI_COMM_WORLD);
+                        active_workers--;
+                    }
                 }
-                else
-                {
-                    fscanf(fp1,"%s %s\n",command,string);
-                    commands_string[0]='\0';
-                    strcat(commands_string,command_type);
-                    strcat(commands_string," ");
-                    strcat(commands_string,command);
-                    strcat(commands_string," ");
-                    strcat(commands_string,string);
-                    //printf("%s\n",commands_string);
-                    sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), message);
-                    fprintf(fp2,"%s",log_message);
-                    MPI_Send(commands_string,100,MPI_CHAR,worker,WORK_TAG,MPI_COMM_WORLD);
-                    sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), message, worker);
-                    fprintf(fp2,"%s",log_message);
-                }
+                fscanf(fp1,"%s %s\n",command,string);
+                commands_string[0]='\0';
+                strcat(commands_string,command_type);
+                strcat(commands_string," ");
+                strcat(commands_string,command);
+                strcat(commands_string," ");
+                strcat(commands_string,string);
+                //printf("%s\n",commands_string);
+                sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), commands_string);
+                fprintf(fp2,"%s",log_message);
+                MPI_Send(commands_string,50,MPI_CHAR,worker,WORK_TAG,MPI_COMM_WORLD);
+                sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), commands_string, worker);
+                fprintf(fp2,"%s",log_message);
             }
             else
             {
                 MPI_Send(dummy,1,MPI_CHAR,worker,FINISH_TAG,MPI_COMM_WORLD);
-                end_tasks++;
-                if(end_tasks == numtasks - 1)
-                {
-                    all_tasks_done = 1;
-                }
+                active_workers--;
             }
         }
 
@@ -293,8 +302,7 @@ int main(int argc, char **argv)
         char input_string[20];
         while(1)
         {
-            MPI_Recv(commands_string,100,MPI_CHAR,0,MPI_ANY_TAG,MPI_COMM_WORLD, &status);
-            //printf("%s\n",commands_string);
+            MPI_Recv(commands_string,50,MPI_CHAR,0,MPI_ANY_TAG,MPI_COMM_WORLD, &status);
             if(status.MPI_TAG == WORK_TAG)
             {
                 //printf("%s\n",commands_string);
@@ -304,6 +312,7 @@ int main(int argc, char **argv)
                 strcpy(instruction,p);
                 p=strtok(NULL," ");
                 strcpy(input_string,p);
+                //printf("%s %s %s\n",client_name,instruction,input_string);
                 if(strcmp(instruction,"ANAGRAMS")==0)
                 {
                     char *permutations=generate_anagrams(input_string);
