@@ -147,11 +147,12 @@ int main(int argc, char **argv)
     {
         int all_tasks_done=0;
         int worker=-1;
+        char log_message[120];
 
         FILE *fp1 = NULL;
         FILE *fp2 = NULL;
         //char *permutations_set=(char *)malloc((factorial(8) * (8+1) + 1) * sizeof(char));
-        if((fp1=fopen("requests_file.txt","r+"))==NULL)
+        if((fp1=fopen("requests_file.txt","r"))==NULL)
         {
             printf("Error opening the requests file\n");
             MPI_Finalize();
@@ -168,11 +169,12 @@ int main(int argc, char **argv)
             if(strcmp(command_type, "WAIT")==0)
             {
                 fscanf(fp1," %s\n",amount_of_time);
-                commands_string[0]='\0';
-                strcat(commands_string,command_type);
+                strcpy(commands_string,command_type);
                 strcat(commands_string," ");
                 strcat(commands_string,amount_of_time);
                 long time = strtol(amount_of_time,NULL,10);
+                sprintf(log_message, "Timestamp %.03f: '%s' received from worker %d\n", MPI_Wtime(), commands_string, worker);
+                fprintf(fp2,"%s",log_message);
                 //printf("%s\n",commands_string);
                 usleep(time * 250000);
             }
@@ -185,24 +187,27 @@ int main(int argc, char **argv)
                 strcat(commands_string,command);
                 strcat(commands_string," ");
                 strcat(commands_string,string);
+                sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), commands_string);
+                fprintf(fp2,"%s",log_message);
                 //printf("%s\n",commands_string);
                 MPI_Send(commands_string,100,MPI_CHAR,i,WORK_TAG,MPI_COMM_WORLD);
+                sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), commands_string, i);
+                fprintf(fp2,"%s",log_message);
             }
         }
 
         while(!all_tasks_done)
         {
             MPI_Recv(char_result, (factorial(8) * (8+1) + 50 + 1), MPI_CHAR, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
+            //printf("%s",char_result);
             worker=status.MPI_SOURCE;
             char message[50];
-            char log_message[120];
             char client_id[7];
             char client_file[11];
             int end_tasks=0;
-            message[0]='\0';
             char *p = strtok(char_result," ");
             strcpy(client_id,p);
-            strcat(message,p);
+            strcpy(message,p);
             strcat(message," ");
             p = strtok(NULL," ");
             strcat(message,p);
@@ -250,8 +255,10 @@ int main(int argc, char **argv)
                     strcat(commands_string,string);
                     //printf("%s\n",commands_string);
                     sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), message);
+                    fprintf(fp2,"%s",log_message);
                     MPI_Send(commands_string,100,MPI_CHAR,worker,WORK_TAG,MPI_COMM_WORLD);
                     sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), message, worker);
+                    fprintf(fp2,"%s",log_message);
                 }
             }
             else
@@ -264,6 +271,8 @@ int main(int argc, char **argv)
                 }
             }
         }
+
+        free(char_result);
 
         if(fclose(fp1)!=0)
         {
@@ -279,16 +288,18 @@ int main(int argc, char **argv)
 
     else // the code for the workers
     {
+        char client_name[7];
         char instruction[20];
         char input_string[20];
         while(1)
         {
             MPI_Recv(commands_string,100,MPI_CHAR,0,MPI_ANY_TAG,MPI_COMM_WORLD, &status);
-            printf("%s\n",commands_string);
+            //printf("%s\n",commands_string);
             if(status.MPI_TAG == WORK_TAG)
             {
                 //printf("%s\n",commands_string);
                 char *p=strtok(commands_string," ");
+                strcpy(client_name,p);
                 p=strtok(NULL," ");
                 strcpy(instruction,p);
                 p=strtok(NULL," ");
@@ -296,7 +307,11 @@ int main(int argc, char **argv)
                 if(strcmp(instruction,"ANAGRAMS")==0)
                 {
                     char *permutations=generate_anagrams(input_string);
-                    strcpy(char_result,commands_string);
+                    strcpy(char_result,client_name);
+                    strcat(char_result," ");
+                    strcat(char_result,instruction);
+                    strcat(char_result," ");
+                    strcat(char_result,input_string);
                     strcat(char_result," ");
                     strcat(char_result,permutations);
                     free(permutations);
@@ -307,7 +322,11 @@ int main(int argc, char **argv)
                     long nr=strtol(input_string,NULL,10);
                     int primes=count_primes(nr);
                     sprintf(str_primes,"%d",primes);
-                    strcpy(char_result,commands_string);
+                    strcpy(char_result,client_name);
+                    strcat(char_result," ");
+                    strcat(char_result,instruction);
+                    strcat(char_result," ");
+                    strcat(char_result,input_string);
                     strcat(char_result," ");
                     strcat(char_result,str_primes);
                 }
@@ -317,7 +336,11 @@ int main(int argc, char **argv)
                     long nr=strtol(input_string,NULL,10);
                     int primedivisors=count_prime_divisors(nr);
                     sprintf(str_primes,"%d",primedivisors);
-                    strcpy(char_result,commands_string);
+                    strcpy(char_result,client_name);
+                    strcat(char_result," ");
+                    strcat(char_result,instruction);
+                    strcat(char_result," ");
+                    strcat(char_result,input_string);
                     strcat(char_result," ");
                     strcat(char_result,str_primes);
                 }
