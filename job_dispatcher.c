@@ -130,14 +130,56 @@ char *generate_anagrams(char *str)
     return permutations_set;
 }
 
+void write_to_client_file(char *char_result,char *dummy,FILE *fp2,int numtasks,int worker)
+{
+    char log_message[120];
+    char message[50];
+    char client_id[7];
+    char client_file[11];
+    char *p = strtok(char_result," ");
+    strcpy(client_id,p);
+    strcpy(message,p);
+    strcat(message," ");
+    p = strtok(NULL," ");
+    strcat(message,p);
+    strcat(message," ");
+    p = strtok(NULL," ");
+    strcat(message,p);
+    strcat(message," ");
+    sprintf(log_message, "Timestamp %.03f: '%s' received from worker %d\n", MPI_Wtime(), message, worker);
+    fprintf(fp2,"%s",log_message);
+    p = strtok(NULL," ");
+    sprintf(client_file,"%s.txt",client_id);
+    FILE *cli=NULL;
+    if((cli=fopen(client_file,"a+"))==NULL)
+    {
+        printf("Error opening the client file\n");
+        for(int i=1;i<=numtasks;i++)
+        {
+            MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
+        }
+        MPI_Finalize();
+    }
+    fprintf(cli,"%s\n",p);
+    if(fclose(cli)!=0)
+    {
+        printf("Error closing the client file\n");
+        for(int i=1;i<=numtasks;i++)
+        {
+            MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
+        }
+        MPI_Finalize();
+    }
+}
+
 int main(int argc, char **argv)
 {
     int numtasks, rank;
-    char amount_of_time[5];
+    char tmp_commands_string[50]; //a temporary command string
     char commands_string[50];
-    char command_type[6];
-    char command[20];
-    char string[20];
+    char word1[10];
+    char word2[20];
+    char word3[20];
     char *char_result = (char *)malloc((factorial(8) * (8+1) + 50 + 1) * sizeof(char));
     char dummy[1];
     MPI_Status status;
@@ -177,90 +219,38 @@ int main(int argc, char **argv)
 
         for(;active_workers<numtasks-1;)
         {
-            fscanf(fp1,"%s",command_type);
-            if(strcmp(command_type, "WAIT")==0)
-            {
-                fscanf(fp1," %s\n",amount_of_time);
-                strcpy(commands_string,command_type);
-                strcat(commands_string," ");
-                strcat(commands_string,amount_of_time);
-                long time = strtol(amount_of_time,NULL,10);
-                //printf("%s\n",commands_string);
-                usleep(time * 250000);
-            }
-            else
-            {
-                fscanf(fp1,"%s %s\n",command,string);
-                commands_string[0]='\0';
-                strcat(commands_string,command_type);
-                strcat(commands_string," ");
-                strcat(commands_string,command);
-                strcat(commands_string," ");
-                strcat(commands_string,string);
-                sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), commands_string);
-                fprintf(fp2,"%s",log_message);
-                //printf("%s\n",commands_string);
-                active_workers++;
-                MPI_Send(commands_string,50,MPI_CHAR,active_workers,WORK_TAG,MPI_COMM_WORLD);
-                sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), commands_string, active_workers);
-                fprintf(fp2,"%s",log_message);
-            }
-        }
+            fgets(commands_string,50,fp1);
 
-        while(active_workers)
-        {
-            MPI_Recv(char_result, (factorial(8) * (8+1) + 50 + 1), MPI_CHAR, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
-            worker=status.MPI_SOURCE;
-            char message[50];
-            char client_id[7];
-            char client_file[11];
-            char *p = strtok(char_result," ");
-            strcpy(client_id,p);
-            strcpy(message,p);
-            strcat(message," ");
-            p = strtok(NULL," ");
-            strcat(message,p);
-            strcat(message," ");
-            p = strtok(NULL," ");
-            strcat(message,p);
-            strcat(message," ");
-            sprintf(log_message, "Timestamp %.03f: '%s' received from worker %d\n", MPI_Wtime(), message, worker);
-            fprintf(fp2,"%s",log_message);
-            p = strtok(NULL," ");
-            sprintf(client_file,"%s.txt",client_id);
-            FILE *cli=NULL;
-            if((cli=fopen(client_file,"a+"))==NULL)
+            int valid_string=0;
+            while(!valid_string) //check whether the line is a valid command to send to a worker or not
             {
-                printf("Error opening the client file\n");
-                for(int i=1;i<=numtasks;i++)
+                strcpy(tmp_commands_string,commands_string);
+                //printf("%s\n",tmp_commands_string);
+                char *p = strtok(tmp_commands_string, " ");
+                if(p != NULL)
                 {
-                    MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
+                    strcpy(word1,p);
                 }
-                MPI_Finalize();
-            }
-            fprintf(cli,"%s\n",p);
-            if(fclose(cli)!=0)
-            {
-                printf("Error closing the client file\n");
-                for(int i=1;i<=numtasks;i++)
+                p = strtok(NULL, " ");
+                if(p != NULL)
                 {
-                    MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
+                    strcpy(word2,p);
                 }
-                MPI_Finalize();
-            }
-            if(fscanf(fp1, "%s", command_type)==1)
-            {
-                while(strcmp(command_type, "WAIT")==0)
+                p = strtok(NULL," ");
+                if(p != NULL)
                 {
-                    fscanf(fp1," %s\n",amount_of_time);
-                    commands_string[0]='\0';
-                    strcat(commands_string,command_type);
-                    strcat(commands_string," ");
-                    strcat(commands_string,amount_of_time);
-                    long time = strtol(amount_of_time,NULL,10);
-                    //printf("%s\n",commands_string);
+                    strcpy(word3, p);
+                }
+                if((word1[0]=='C' && word1[1]=='L' && word1[2]=='I') &&
+                 (strcmp(word2,"PRIMES")==0 || strcmp(word2,"PRIMEDIVISORS")==0 || strcmp(word2,"ANAGRAMS")==0))
+                {
+                    valid_string = 1;
+                }
+                else if(strcmp(word1,"WAIT") == 0)
+                {
+                    long time = strtol(word2,NULL,10);
                     usleep(time * 250000);
-                    if(fscanf(fp1, "%s", command_type)==1)
+                    if(fgets(commands_string,50,fp1)!=NULL)
                     {
                         continue;
                     }
@@ -270,19 +260,107 @@ int main(int argc, char **argv)
                         active_workers--;
                     }
                 }
-                fscanf(fp1,"%s %s\n",command,string);
-                commands_string[0]='\0';
-                strcat(commands_string,command_type);
-                strcat(commands_string," ");
-                strcat(commands_string,command);
-                strcat(commands_string," ");
-                strcat(commands_string,string);
+                else {
+                    sprintf(log_message, "Timestamp %.03f: Not a valid request!!\n", MPI_Wtime());
+                    fprintf(fp2,"%s",log_message);
+                    if(fgets(commands_string,50,fp1)!=NULL)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        MPI_Send(dummy,1,MPI_CHAR,worker,FINISH_TAG,MPI_COMM_WORLD);
+                        active_workers--;
+                    }
+                }
+            }
+            if(commands_string[strlen(commands_string)-1]=='\n')
+            {
+                commands_string[strlen(commands_string)-1]='\0';
+            }
+            sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), commands_string);
+            fprintf(fp2,"%s",log_message);
+            //printf("%s\n",commands_string);
+            active_workers++;
+            MPI_Send(commands_string,50,MPI_CHAR,active_workers,WORK_TAG,MPI_COMM_WORLD);
+            sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), commands_string, active_workers);
+            fprintf(fp2,"%s",log_message);
+        }
+
+        while(active_workers)
+        {
+            MPI_Recv(char_result, (factorial(8) * (8+1) + 50 + 1), MPI_CHAR, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
+            worker=status.MPI_SOURCE;
+            write_to_client_file(char_result,dummy,fp2,numtasks,worker);
+            if(fgets(commands_string,50,fp1)!=NULL)
+            {
+                int valid_string=0;
+                while(!valid_string) //check whether the line is a valid command to send to a worker or not
+                {
+                    strcpy(tmp_commands_string,commands_string);
+                    //printf("%s\n",tmp_commands_string);
+                    char *p = strtok(tmp_commands_string, " ");
+                    if(p != NULL)
+                    {
+                        strcpy(word1,p);
+                    }
+                    p = strtok(NULL, " ");
+                    if(p != NULL)
+                    {
+                        strcpy(word2,p);
+                    }
+                    p = strtok(NULL," ");
+                    if(p != NULL)
+                    {
+                        strcpy(word3, p);
+                    }
+                    if((word1[0]=='C' && word1[1]=='L' && word1[2]=='I') &&
+                     (strcmp(word2,"PRIMES")==0 || strcmp(word2,"PRIMEDIVISORS")==0 || strcmp(word2,"ANAGRAMS")==0))
+                    {
+                        valid_string = 1;
+                    }
+                    else if(strcmp(word1,"WAIT") == 0)
+                    {
+                        long time = strtol(word2,NULL,10);
+                        usleep(time * 250000);
+                        if(fgets(commands_string,50,fp1)!=NULL)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            MPI_Send(dummy,1,MPI_CHAR,worker,FINISH_TAG,MPI_COMM_WORLD);
+                            active_workers--;
+                        }
+                    }
+                    else {
+                        sprintf(log_message, "Timestamp %.03f: Not a valid request!!\n", MPI_Wtime());
+                        fprintf(fp2,"%s",log_message);
+                        if(fgets(commands_string,50,fp1)!=NULL)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            MPI_Send(dummy,1,MPI_CHAR,worker,FINISH_TAG,MPI_COMM_WORLD);
+                            active_workers--;
+                            break;
+                        }
+                    }
+                }
                 //printf("%s\n",commands_string);
-                sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), commands_string);
-                fprintf(fp2,"%s",log_message);
-                MPI_Send(commands_string,50,MPI_CHAR,worker,WORK_TAG,MPI_COMM_WORLD);
-                sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), commands_string, worker);
-                fprintf(fp2,"%s",log_message);
+                if(active_workers == numtasks-1)
+                {
+                    if(commands_string[strlen(commands_string)-1]=='\n')
+                    {
+                        commands_string[strlen(commands_string)-1]='\0';
+                    }
+                    sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), commands_string);
+                    fprintf(fp2,"%s",log_message);
+                    MPI_Send(commands_string,50,MPI_CHAR,worker,WORK_TAG,MPI_COMM_WORLD);
+                    sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), commands_string, worker);
+                    fprintf(fp2,"%s",log_message);
+                }
             }
             else
             {

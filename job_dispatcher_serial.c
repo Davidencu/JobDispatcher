@@ -138,14 +138,11 @@ int main(void)
     struct timespec end;
     clock_gettime(CLOCK_MONOTONIC,&start);
     char log_message[120];
-    char amount_of_time[5];
     char commands_string[50];
-    char command_type[6];
-    char command[20];
-    char string[20];
-    char client_name[7];
-    char instruction[20];
-    char input_string[20];
+    char word1[10];
+    char word2[20];
+    char word3[20];
+    char tmp_commands_string[50];
     char *char_result = (char *)malloc((factorial(8) * (8+1) + 50 + 1) * sizeof(char));
     //char *permutations_set=(char *)malloc((factorial(8) * (8+1) + 1) * sizeof(char));
     if((fp1=fopen("requests_file2.txt","r"))==NULL)
@@ -158,82 +155,97 @@ int main(void)
         printf("Error opening the log file\n");
         exit(-1);
     }
-    while(fscanf(fp1,"%s",command_type)==1)
+    while(fgets(commands_string,50,fp1)!=NULL)
     {
-        if(strcmp(command_type, "WAIT")==0)
+        strcpy(tmp_commands_string,commands_string);
+        //printf("%s\n",tmp_commands_string);
+        char *p = strtok(tmp_commands_string, " ");
+        if(p != NULL)
         {
-            fscanf(fp1," %s\n",amount_of_time);
-            strcpy(commands_string,command_type);
-            strcat(commands_string," ");
-            strcat(commands_string,amount_of_time);
-            long time = strtol(amount_of_time,NULL,10);
-            //printf("%s\n",commands_string);
+            strcpy(word1,p);
+        }
+        p = strtok(NULL, " ");
+        if(p != NULL)
+        {
+            strcpy(word2,p);
+        }
+        p = strtok(NULL," ");
+        if(p != NULL)
+        {
+            strcpy(word3, p);
+            if(word3[strlen(word3)-1]=='\n')
+            {
+                word3[strlen(word3)-1]='\0';
+            }
+        }
+    //printf("%s\n",commands_string);
+        if(commands_string[strlen(commands_string)-1]=='\n')
+        {
+            commands_string[strlen(commands_string)-1]='\0';
+        }
+        if(strcmp(word1, "WAIT")==0)
+        {
+            long time = strtol(word2,NULL,10);
             usleep(time * 250000);
         }
         else
         {
-            fscanf(fp1,"%s %s\n",command,string);
-            commands_string[0]='\0';
-            strcat(commands_string,command_type);
-            strcat(commands_string," ");
-            strcat(commands_string,command);
-            strcat(commands_string," ");
-            strcat(commands_string,string);
             clock_gettime(CLOCK_MONOTONIC, &end);
             double time=((double)end.tv_sec + (double)end.tv_nsec / 1000000000.0) - ((double)start.tv_sec + (double)start.tv_nsec / 1000000000.0);
             sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", time, commands_string);
             fprintf(fp2,"%s",log_message);
-            char *p=strtok(commands_string," ");
-            strcpy(client_name,p);
-            p=strtok(NULL," ");
-            strcpy(instruction,p);
-            p=strtok(NULL," ");
-            strcpy(input_string,p);
             //printf("%s %s %s\n",client_name,instruction,input_string);
-            if(strcmp(instruction,"ANAGRAMS")==0)
+            if(strcmp(word2,"ANAGRAMS")==0)
             {
-                char *permutations=generate_anagrams(input_string);
-                strcpy(char_result,client_name);
+                char *permutations=generate_anagrams(word3);
+                strcpy(char_result,word1);
                 strcat(char_result," ");
-                strcat(char_result,instruction);
+                strcat(char_result,word2);
                 strcat(char_result," ");
-                strcat(char_result,input_string);
+                strcat(char_result,word3);
                 strcat(char_result," ");
                 strcat(char_result,permutations);
                 free(permutations);
             }
-            else if(strcmp(instruction,"PRIMES")==0)
+            else if(strcmp(word2,"PRIMES")==0)
             {
                 char str_primes[10];
-                long nr=strtol(input_string,NULL,10);
+                long nr=strtol(word3,NULL,10);
                 int primes=count_primes(nr);
                 sprintf(str_primes,"%d",primes);
-                strcpy(char_result,client_name);
+                strcpy(char_result,word1);
                 strcat(char_result," ");
-                strcat(char_result,instruction);
+                strcat(char_result,word2);
                 strcat(char_result," ");
-                strcat(char_result,input_string);
+                strcat(char_result,word3);
                 strcat(char_result," ");
                 strcat(char_result,str_primes);
             }
-            else if(strcmp(instruction,"PRIMEDIVISORS")==0)
+            else if(strcmp(word2,"PRIMEDIVISORS")==0)
             {
                 char str_primes[10];
-                long nr=strtol(input_string,NULL,10);
+                long nr=strtol(word3,NULL,10);
                 int primedivisors=count_prime_divisors(nr);
                 sprintf(str_primes,"%d",primedivisors);
-                strcpy(char_result,client_name);
+                strcpy(char_result,word1);
                 strcat(char_result," ");
-                strcat(char_result,instruction);
+                strcat(char_result,word2);
                 strcat(char_result," ");
-                strcat(char_result,input_string);
+                strcat(char_result,word3);
                 strcat(char_result," ");
                 strcat(char_result,str_primes);
+            }
+            else {
+                clock_gettime(CLOCK_MONOTONIC, &end);
+                time=((double)end.tv_sec + (double)end.tv_nsec / 1000000000.0) - ((double)start.tv_sec + (double)start.tv_nsec / 1000000000.0);
+                sprintf(log_message, "Timestamp %.03f: not a valid request!!\n", time);
+                fprintf(fp2,"%s",log_message);
+                continue;
             }
             char message[50];
             char client_id[7];
             char client_file[11];
-            p = strtok(char_result," ");
+            char *p = strtok(char_result," ");
             strcpy(client_id,p);
             strcpy(message,p);
             strcat(message," ");
