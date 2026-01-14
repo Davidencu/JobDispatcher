@@ -30,7 +30,7 @@ bool isPrime(int n) { //efficient function to check if a number is prime or not
     return true;
 }
 
-int count_primes(long n)
+int count_primes(long n) //how many prime numbers are in the first n natural numbers
 {
     int tmp=0;
     for(long i=2;i<n;i++)
@@ -43,7 +43,7 @@ int count_primes(long n)
     return tmp;
 }
 
-int count_prime_divisors(long n)
+int count_prime_divisors(long n) //how many distinct prime divisors has the number n
 {
     int count = 0;
     for (long i = 1; i <= n; i++) {
@@ -55,7 +55,7 @@ int count_prime_divisors(long n)
     return count;
 }
 
-void generate_anagram_set(int n, int *anagram_set)
+void generate_anagram_set(int n, int *anagram_set) //generate helper set for anagrams
 {
     for(int i=0;i<n;i++)
     {
@@ -92,7 +92,7 @@ int factorial(int n)
     return tmp;
 }
 
-void generate_permutations(int *anagram_set,char *str,char *permutations_set,int *x,int k,int n)
+void generate_permutations(int *anagram_set,char *str,char *permutations_set,int *x,int k,int n) //backtracking to generate all the possible permutations
 {
     for(int i = 0;i < n;i++)
     {
@@ -117,7 +117,7 @@ void generate_permutations(int *anagram_set,char *str,char *permutations_set,int
     }
 }
 
-char *generate_anagrams(char *str)
+char *generate_anagrams(char *str) //function to generate all the anagrams of a given word
 {
     int anagram_set[8] = {0};
     int n = strlen(str);
@@ -130,7 +130,7 @@ char *generate_anagrams(char *str)
     return permutations_set;
 }
 
-void write_to_client_file(char *char_result,char *dummy,FILE *fp2,int numtasks,int worker)
+void write_to_client_file(char *char_result,char *dummy,FILE *fp2,int numtasks,int worker) //write the result to the corresponding client file
 {
     char log_message[120];
     char message[50];
@@ -151,7 +151,7 @@ void write_to_client_file(char *char_result,char *dummy,FILE *fp2,int numtasks,i
     p = strtok(NULL," ");
     sprintf(client_file,"%s.txt",client_id);
     FILE *cli=NULL;
-    if((cli=fopen(client_file,"a+"))==NULL)
+    if((cli=fopen(client_file,"a+"))==NULL) //if the client file doesn't exist, it will be created
     {
         printf("Error opening the client file\n");
         for(int i=1;i<=numtasks;i++)
@@ -180,9 +180,9 @@ int main(int argc, char **argv)
     char word1[10];
     char word2[20];
     char word3[20];
-    char *char_result = (char *)malloc((factorial(8) * (8+1) + 50 + 1) * sizeof(char));
+    char *char_result = (char *)malloc((factorial(8) * (8+1) + 50 + 1) * sizeof(char)); //allocate the maximum size (considering the maximum word length for anagram is 8 characters)
     char dummy[1];
-    MPI_Status status;
+    MPI_Status status; //useful when extracting information about the message received from a worker
     //MPI_Request request;
 
     MPI_Init(&argc, &argv);
@@ -198,7 +198,7 @@ int main(int argc, char **argv)
         FILE *fp1 = NULL;
         FILE *fp2 = NULL;
         //char *permutations_set=(char *)malloc((factorial(8) * (8+1) + 1) * sizeof(char));
-        if((fp1=fopen("requests_file2.txt","r"))==NULL)
+        if((fp1=fopen("requests_file2.txt","r"))==NULL) //opening needed files
         {
             printf("Error opening the requests file\n");
             for(int i=1;i<=numtasks;i++)
@@ -217,14 +217,14 @@ int main(int argc, char **argv)
             MPI_Finalize();
         }
 
-        for(;active_workers<numtasks-1;)
+        for(;active_workers<numtasks-1;) //allocate the first numtasks - 1 tasks to different workrs
         {
             fgets(commands_string,50,fp1);
 
             int valid_string=0;
             while(!valid_string) //check whether the line is a valid command to send to a worker or not
             {
-                strcpy(tmp_commands_string,commands_string);
+                strcpy(tmp_commands_string,commands_string); //file line handling
                 //printf("%s\n",tmp_commands_string);
                 char *p = strtok(tmp_commands_string, " ");
                 if(p != NULL)
@@ -274,7 +274,7 @@ int main(int argc, char **argv)
                     }
                 }
             }
-            if(commands_string[strlen(commands_string)-1]=='\n')
+            if(commands_string[strlen(commands_string)-1]=='\n') //remove the '\n' character at the end of the line
             {
                 commands_string[strlen(commands_string)-1]='\0';
             }
@@ -289,7 +289,7 @@ int main(int argc, char **argv)
 
         while(active_workers)
         {
-            MPI_Recv(char_result, (factorial(8) * (8+1) + 50 + 1), MPI_CHAR, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
+            MPI_Recv(char_result, (factorial(8) * (8+1) + 50 + 1), MPI_CHAR, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status); //receive the message from the worker which finishes his task the fastest
             worker=status.MPI_SOURCE;
             write_to_client_file(char_result,dummy,fp2,numtasks,worker);
             if(fgets(commands_string,50,fp1)!=NULL)
@@ -349,7 +349,7 @@ int main(int argc, char **argv)
                     }
                 }
                 //printf("%s\n",commands_string);
-                if(active_workers == numtasks-1)
+                if(active_workers == numtasks-1) //only if we have not already sent a message to the worker to terminate itself, we can send the command string
                 {
                     if(commands_string[strlen(commands_string)-1]=='\n')
                     {
@@ -362,16 +362,16 @@ int main(int argc, char **argv)
                     fprintf(fp2,"%s",log_message);
                 }
             }
-            else
+            else //if the end of the command file was reached
             {
                 MPI_Send(dummy,1,MPI_CHAR,worker,FINISH_TAG,MPI_COMM_WORLD);
                 active_workers--;
             }
         }
 
-        free(char_result);
+        free(char_result); //free the space of the string containing the command + result received from the worker
 
-        if(fclose(fp1)!=0)
+        if(fclose(fp1)!=0) //close the files
         {
             printf("Error closing the requests file\n");
             MPI_Finalize();
@@ -391,11 +391,11 @@ int main(int argc, char **argv)
         char input_string[20];
         while(1)
         {
-            MPI_Recv(commands_string,50,MPI_CHAR,0,MPI_ANY_TAG,MPI_COMM_WORLD, &status);
+            MPI_Recv(commands_string,50,MPI_CHAR,0,MPI_ANY_TAG,MPI_COMM_WORLD, &status); //receive command from the master
             if(status.MPI_TAG == WORK_TAG)
             {
                 //printf("%s\n",commands_string);
-                char *p=strtok(commands_string," ");
+                char *p=strtok(commands_string," "); //process the received command
                 strcpy(client_name,p);
                 p=strtok(NULL," ");
                 strcpy(instruction,p);
@@ -441,7 +441,7 @@ int main(int argc, char **argv)
                     strcat(char_result,input_string);
                     strcat(char_result," ");
                     strcat(char_result,str_primes);
-                }
+                } //we attach to the string received from the master the result then we send the concatenated string back to the master
                 MPI_Send(char_result, (factorial(8) * (8+1) + 50 + 1), MPI_CHAR, 0, 0, MPI_COMM_WORLD);
             }
             else if(status.MPI_TAG == FINISH_TAG)
