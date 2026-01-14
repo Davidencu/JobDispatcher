@@ -1,95 +1,95 @@
-Timestamp 0.625: 'CLI0 PRIMEDIVISORS 400000' received from the command file
-Timestamp 0.625: 'CLI0 PRIMEDIVISORS 400000' sent to worker 1
-Timestamp 0.625: 'CLI1 ANAGRAMS tralala' received from the command file
-Timestamp 0.626: 'CLI1 ANAGRAMS tralala' sent to worker 2
-Timestamp 0.876: 'CLI2 PRIMEDIVISORS 129072' received from the command file
-Timestamp 0.876: 'CLI2 PRIMEDIVISORS 129072' sent to worker 3
-Timestamp 0.876: 'CLI0 PRIMEDIVISORS 400000 ' received from worker 1
-Timestamp 0.876: 'CLI3 PRIMES 2908764' received from the command file
-Timestamp 0.876: 'CLI3 PRIMES 2908764' sent to worker 1
-Timestamp 0.876: 'CLI1 ANAGRAMS tralala ' received from worker 2
-Timestamp 0.876: 'CLI4 PRIMES 10000000' received from the command file
-Timestamp 0.876: 'CLI4 PRIMES 10000000' sent to worker 2
-Timestamp 0.877: 'CLI2 PRIMEDIVISORS 129072 ' received from worker 3
-Timestamp 1.377: 'CLI5 PRIMES 20876' received from the command file
-Timestamp 1.377: 'CLI5 PRIMES 20876' sent to worker 3
-Timestamp 1.378: 'CLI5 PRIMES 20876 ' received from worker 3
-Timestamp 1.378: 'CLI6 ANAGRAMS friend' received from the command file
-Timestamp 1.378: 'CLI6 ANAGRAMS friend' sent to worker 3
-Timestamp 1.379: 'CLI6 ANAGRAMS friend ' received from worker 3
-Timestamp 1.379: 'CLI7 PRIMEDIVISORS 714932' received from the command file
-Timestamp 1.379: 'CLI7 PRIMEDIVISORS 714932' sent to worker 3
-Timestamp 1.384: 'CLI3 PRIMES 2908764 ' received from worker 1
-Timestamp 1.384: 'CLI8 ANAGRAMS lollipop' received from the command file
-Timestamp 1.384: 'CLI8 ANAGRAMS lollipop' sent to worker 1
-Timestamp 1.386: 'CLI7 PRIMEDIVISORS 714932 ' received from worker 3
-Timestamp 1.386: 'CLI9 PRIMES 8534921' received from the command file
-Timestamp 1.386: 'CLI9 PRIMES 8534921' sent to worker 3
-Timestamp 1.611: 'CLI8 ANAGRAMS lollipop ' received from worker 1
-Timestamp 2.361: 'CLI10 PRIMEDIVISORS 560123' received from the command file
-Timestamp 2.361: 'CLI10 PRIMEDIVISORS 560123' sent to worker 1
-Timestamp 2.367: 'CLI10 PRIMEDIVISORS 560123 ' received from worker 1
-Timestamp 2.367: 'CLI11 ANAGRAMS sunshine' received from the command file
-Timestamp 2.367: 'CLI11 ANAGRAMS sunshine' sent to worker 1
-Timestamp 2.632: 'CLI11 ANAGRAMS sunshine ' received from worker 1
-Timestamp 2.885: 'CLI12 PRIMES 12345678' received from the command file
-Timestamp 2.885: 'CLI12 PRIMES 12345678' sent to worker 1
-Timestamp 3.741: 'CLI9 PRIMES 8534921 ' received from worker 3
-Timestamp 3.741: 'CLI13 PRIMEDIVISORS 892613' received from the command file
-Timestamp 3.741: 'CLI13 PRIMEDIVISORS 892613' sent to worker 3
-Timestamp 3.752: 'CLI13 PRIMEDIVISORS 892613 ' received from worker 3
-Timestamp 3.752: 'CLI14 ANAGRAMS lobster' received from the command file
-Timestamp 3.752: 'CLI14 ANAGRAMS lobster' sent to worker 3
-Timestamp 3.755: 'CLI14 ANAGRAMS lobster ' received from worker 3
-Timestamp 3.756: 'CLI15 ANAGRAMS bipolar' received from the command file
-Timestamp 3.756: 'CLI15 ANAGRAMS bipolar' sent to worker 3
-Timestamp 3.760: 'CLI15 ANAGRAMS bipolar ' received from worker 3
-Timestamp 3.760: 'CLI16 PRIMEDIVISORS 231456' received from the command file
-Timestamp 3.760: 'CLI16 PRIMEDIVISORS 231456' sent to worker 3
-Timestamp 3.763: 'CLI16 PRIMEDIVISORS 231456 ' received from worker 3
-Timestamp 3.763: 'CLI17 PRIMEDIVISORS 345678' received from the command file
-Timestamp 3.763: 'CLI17 PRIMEDIVISORS 345678' sent to worker 3
-Timestamp 3.767: 'CLI17 PRIMEDIVISORS 345678 ' received from worker 3
-Timestamp 4.517: 'CLI18 PRIMES 8888888' received from the command file
-Timestamp 4.517: 'CLI18 PRIMES 8888888' sent to worker 3
-Timestamp 4.517: 'CLI4 PRIMES 10000000 ' received from worker 2
-Timestamp 4.518: 'CLI19 ANAGRAMS cascade' received from the command file
-Timestamp 4.518: 'CLI19 ANAGRAMS cascade' sent to worker 2
-Timestamp 4.539: 'CLI19 ANAGRAMS cascade ' received from worker 2
-Timestamp 4.540: 'CLI20 PRIMEDIVISORS 900000' received from the command file
-Timestamp 4.540: 'CLI20 PRIMEDIVISORS 900000' sent to worker 2
-Timestamp 4.548: 'CLI20 PRIMEDIVISORS 900000 ' received from worker 2
-Timestamp 4.549: 'CLI21 PRIMES 7654321' received from the command file
-Timestamp 4.549: 'CLI21 PRIMES 7654321' sent to worker 2
-Timestamp 6.473: 'CLI21 PRIMES 7654321 ' received from worker 2
-Timestamp 6.473: 'CLI22 PRIMES 9876543' received from the command file
-Timestamp 6.473: 'CLI22 PRIMES 9876543' sent to worker 2
-Timestamp 7.183: 'CLI18 PRIMES 8888888 ' received from worker 3
-Timestamp 7.183: 'CLI23 PRIMEDIVISORS 319432' received from the command file
-Timestamp 7.183: 'CLI23 PRIMEDIVISORS 319432' sent to worker 3
-Timestamp 7.186: 'CLI23 PRIMEDIVISORS 319432 ' received from worker 3
-Timestamp 8.186: 'CLI24 ANAGRAMS athens' received from the command file
-Timestamp 8.186: 'CLI24 ANAGRAMS athens' sent to worker 3
-Timestamp 8.186: 'CLI12 PRIMES 12345678 ' received from worker 1
-Timestamp 8.187: 'CLI25 PRIMES 4567890' received from the command file
-Timestamp 8.187: 'CLI25 PRIMES 4567890' sent to worker 1
-Timestamp 8.187: 'CLI24 ANAGRAMS athens ' received from worker 3
-Timestamp 8.187: 'CLI26 PRIMEDIVISORS 429313' received from the command file
-Timestamp 8.187: 'CLI26 PRIMEDIVISORS 429313' sent to worker 3
-Timestamp 8.192: 'CLI26 PRIMEDIVISORS 429313 ' received from worker 3
-Timestamp 8.195: 'CLI27 PRIMEDIVISORS 123789' received from the command file
-Timestamp 8.195: 'CLI27 PRIMEDIVISORS 123789' sent to worker 3
-Timestamp 8.197: 'CLI27 PRIMEDIVISORS 123789 ' received from worker 3
-Timestamp 8.197: 'CLI28 PRIMEDIVISORS 678901' received from the command file
-Timestamp 8.197: 'CLI28 PRIMEDIVISORS 678901' sent to worker 3
-Timestamp 8.204: 'CLI28 PRIMEDIVISORS 678901 ' received from worker 3
-Timestamp 8.204: 'CLI29 ANAGRAMS istanbul' received from the command file
-Timestamp 8.204: 'CLI29 ANAGRAMS istanbul' sent to worker 3
-Timestamp 8.483: 'CLI29 ANAGRAMS istanbul ' received from worker 3
-Timestamp 8.487: 'CLI30 ANAGRAMS skyline' received from the command file
-Timestamp 8.487: 'CLI30 ANAGRAMS skyline' sent to worker 3
-Timestamp 8.490: 'CLI30 ANAGRAMS skyline ' received from worker 3
-Timestamp 8.491: Not a valid request!!
-Timestamp 8.491: Not a valid request!!
-Timestamp 9.168: 'CLI25 PRIMES 4567890 ' received from worker 1
-Timestamp 9.240: 'CLI22 PRIMES 9876543 ' received from worker 2
+Timestamp 0.496: 'CLI0 PRIMEDIVISORS 400000' received from the command file
+Timestamp 0.497: 'CLI0 PRIMEDIVISORS 400000' sent to worker 1
+Timestamp 0.497: 'CLI1 ANAGRAMS tralala' received from the command file
+Timestamp 0.497: 'CLI1 ANAGRAMS tralala' sent to worker 2
+Timestamp 0.748: 'CLI2 PRIMEDIVISORS 129072' received from the command file
+Timestamp 0.748: 'CLI2 PRIMEDIVISORS 129072' sent to worker 3
+Timestamp 0.748: 'CLI1 ANAGRAMS tralala ' received from worker 2
+Timestamp 0.749: 'CLI3 PRIMES 2908764' received from the command file
+Timestamp 0.749: 'CLI3 PRIMES 2908764' sent to worker 2
+Timestamp 0.749: 'CLI0 PRIMEDIVISORS 400000 ' received from worker 1
+Timestamp 0.749: 'CLI4 PRIMES 10000000' received from the command file
+Timestamp 0.749: 'CLI4 PRIMES 10000000' sent to worker 1
+Timestamp 0.749: 'CLI2 PRIMEDIVISORS 129072 ' received from worker 3
+Timestamp 1.249: 'CLI5 PRIMES 20876' received from the command file
+Timestamp 1.249: 'CLI5 PRIMES 20876' sent to worker 3
+Timestamp 1.250: 'CLI5 PRIMES 20876 ' received from worker 3
+Timestamp 1.250: 'CLI6 ANAGRAMS friend' received from the command file
+Timestamp 1.250: 'CLI6 ANAGRAMS friend' sent to worker 3
+Timestamp 1.251: 'CLI6 ANAGRAMS friend ' received from worker 3
+Timestamp 1.251: 'CLI7 PRIMEDIVISORS 714932' received from the command file
+Timestamp 1.251: 'CLI7 PRIMEDIVISORS 714932' sent to worker 3
+Timestamp 1.258: 'CLI7 PRIMEDIVISORS 714932 ' received from worker 3
+Timestamp 1.258: 'CLI8 ANAGRAMS lollipop' received from the command file
+Timestamp 1.258: 'CLI8 ANAGRAMS lollipop' sent to worker 3
+Timestamp 1.288: 'CLI3 PRIMES 2908764 ' received from worker 2
+Timestamp 1.288: 'CLI9 PRIMES 8534921' received from the command file
+Timestamp 1.288: 'CLI9 PRIMES 8534921' sent to worker 2
+Timestamp 1.470: 'CLI8 ANAGRAMS lollipop ' received from worker 3
+Timestamp 2.234: 'CLI10 PRIMEDIVISORS 560123' received from the command file
+Timestamp 2.234: 'CLI10 PRIMEDIVISORS 560123' sent to worker 3
+Timestamp 2.239: 'CLI10 PRIMEDIVISORS 560123 ' received from worker 3
+Timestamp 2.240: 'CLI11 ANAGRAMS sunshine' received from the command file
+Timestamp 2.240: 'CLI11 ANAGRAMS sunshine' sent to worker 3
+Timestamp 2.451: 'CLI11 ANAGRAMS sunshine ' received from worker 3
+Timestamp 2.703: 'CLI12 PRIMES 12345678' received from the command file
+Timestamp 2.703: 'CLI12 PRIMES 12345678' sent to worker 3
+Timestamp 3.439: 'CLI4 PRIMES 10000000 ' received from worker 1
+Timestamp 3.439: 'CLI13 PRIMEDIVISORS 892613' received from the command file
+Timestamp 3.439: 'CLI13 PRIMEDIVISORS 892613' sent to worker 1
+Timestamp 3.448: 'CLI13 PRIMEDIVISORS 892613 ' received from worker 1
+Timestamp 3.448: 'CLI14 ANAGRAMS lobster' received from the command file
+Timestamp 3.448: 'CLI14 ANAGRAMS lobster' sent to worker 1
+Timestamp 3.451: 'CLI14 ANAGRAMS lobster ' received from worker 1
+Timestamp 3.452: 'CLI15 ANAGRAMS bipolar' received from the command file
+Timestamp 3.452: 'CLI15 ANAGRAMS bipolar' sent to worker 1
+Timestamp 3.455: 'CLI15 ANAGRAMS bipolar ' received from worker 1
+Timestamp 3.457: 'CLI16 PRIMEDIVISORS 231456' received from the command file
+Timestamp 3.457: 'CLI16 PRIMEDIVISORS 231456' sent to worker 1
+Timestamp 3.459: 'CLI16 PRIMEDIVISORS 231456 ' received from worker 1
+Timestamp 3.459: 'CLI17 PRIMEDIVISORS 345678' received from the command file
+Timestamp 3.459: 'CLI17 PRIMEDIVISORS 345678' sent to worker 1
+Timestamp 3.462: 'CLI17 PRIMEDIVISORS 345678 ' received from worker 1
+Timestamp 4.213: 'CLI18 PRIMES 8888888' received from the command file
+Timestamp 4.213: 'CLI18 PRIMES 8888888' sent to worker 1
+Timestamp 4.213: 'CLI9 PRIMES 8534921 ' received from worker 2
+Timestamp 4.213: 'CLI19 ANAGRAMS cascade' received from the command file
+Timestamp 4.213: 'CLI19 ANAGRAMS cascade' sent to worker 2
+Timestamp 4.216: 'CLI19 ANAGRAMS cascade ' received from worker 2
+Timestamp 4.218: 'CLI20 PRIMEDIVISORS 900000' received from the command file
+Timestamp 4.218: 'CLI20 PRIMEDIVISORS 900000' sent to worker 2
+Timestamp 4.228: 'CLI20 PRIMEDIVISORS 900000 ' received from worker 2
+Timestamp 4.228: 'CLI21 PRIMES 7654321' received from the command file
+Timestamp 4.228: 'CLI21 PRIMES 7654321' sent to worker 2
+Timestamp 6.456: 'CLI21 PRIMES 7654321 ' received from worker 2
+Timestamp 6.457: 'CLI22 PRIMES 9876543' received from the command file
+Timestamp 6.457: 'CLI22 PRIMES 9876543' sent to worker 2
+Timestamp 6.521: 'CLI18 PRIMES 8888888 ' received from worker 1
+Timestamp 6.522: 'CLI23 PRIMEDIVISORS 319432' received from the command file
+Timestamp 6.522: 'CLI23 PRIMEDIVISORS 319432' sent to worker 1
+Timestamp 6.525: 'CLI23 PRIMEDIVISORS 319432 ' received from worker 1
+Timestamp 7.525: 'CLI24 ANAGRAMS athens' received from the command file
+Timestamp 7.525: 'CLI24 ANAGRAMS athens' sent to worker 1
+Timestamp 7.525: 'CLI12 PRIMES 12345678 ' received from worker 3
+Timestamp 7.526: 'CLI25 PRIMES 4567890' received from the command file
+Timestamp 7.526: 'CLI25 PRIMES 4567890' sent to worker 3
+Timestamp 7.526: 'CLI24 ANAGRAMS athens ' received from worker 1
+Timestamp 7.526: 'CLI26 PRIMEDIVISORS 429313' received from the command file
+Timestamp 7.526: 'CLI26 PRIMEDIVISORS 429313' sent to worker 1
+Timestamp 7.531: 'CLI26 PRIMEDIVISORS 429313 ' received from worker 1
+Timestamp 7.531: 'CLI27 PRIMEDIVISORS 123789' received from the command file
+Timestamp 7.531: 'CLI27 PRIMEDIVISORS 123789' sent to worker 1
+Timestamp 7.533: 'CLI27 PRIMEDIVISORS 123789 ' received from worker 1
+Timestamp 7.533: 'CLI28 PRIMEDIVISORS 678901' received from the command file
+Timestamp 7.533: 'CLI28 PRIMEDIVISORS 678901' sent to worker 1
+Timestamp 7.540: 'CLI28 PRIMEDIVISORS 678901 ' received from worker 1
+Timestamp 7.540: 'CLI29 ANAGRAMS istanbul' received from the command file
+Timestamp 7.540: 'CLI29 ANAGRAMS istanbul' sent to worker 1
+Timestamp 7.782: 'CLI29 ANAGRAMS istanbul ' received from worker 1
+Timestamp 7.786: 'CLI30 ANAGRAMS skyline' received from the command file
+Timestamp 7.786: 'CLI30 ANAGRAMS skyline' sent to worker 1
+Timestamp 7.789: 'CLI30 ANAGRAMS skyline ' received from worker 1
+Timestamp 7.791: Not a valid request!!
+Timestamp 7.791: Not a valid request!!
+Timestamp 8.428: 'CLI25 PRIMES 4567890 ' received from worker 3
+Timestamp 9.406: 'CLI22 PRIMES 9876543 ' received from worker 2
