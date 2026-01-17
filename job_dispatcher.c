@@ -11,7 +11,7 @@
 
 char permutation[9];
 
-bool isPrime(int n) { //efficient function to check if a number is prime or not
+bool isPrime(long n) { //efficient function to check if a number is prime or not
     if (n <= 1) {
         return false;
     }
@@ -22,7 +22,7 @@ bool isPrime(int n) { //efficient function to check if a number is prime or not
         return false;
     }
 
-    for (int i = 3; i * i <= n; i += 2) {
+    for (long i = 3; i * i <= n; i += 2) {
         if (n % i == 0) {
             return false; // Found a divisor, not prime.
         }
@@ -154,7 +154,7 @@ void write_to_client_file(char *char_result,char *dummy,FILE *fp2,int numtasks,i
     if((cli=fopen(client_file,"a+"))==NULL) //if the client file doesn't exist, it will be created
     {
         printf("Error opening the client file\n");
-        for(int i=1;i<=numtasks;i++)
+        for(int i=1;i<=numtasks-1;i++)
         {
             MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
         }
@@ -164,7 +164,7 @@ void write_to_client_file(char *char_result,char *dummy,FILE *fp2,int numtasks,i
     if(fclose(cli)!=0)
     {
         printf("Error closing the client file\n");
-        for(int i=1;i<=numtasks;i++)
+        for(int i=1;i<=numtasks-1;i++)
         {
             MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
         }
@@ -183,7 +183,7 @@ int main(int argc, char **argv)
     char *char_result = (char *)malloc((factorial(8) * (8+1) + 50 + 1) * sizeof(char)); //allocate the maximum size (considering the maximum word length for anagram is 8 characters)
     char dummy[1];
     MPI_Status status; //useful when extracting information about the message received from a worker
-    //MPI_Request request;
+    MPI_Request request;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
@@ -201,7 +201,7 @@ int main(int argc, char **argv)
         if((fp1=fopen("requests_file2.txt","r"))==NULL) //opening needed files
         {
             printf("Error opening the requests file\n");
-            for(int i=1;i<=numtasks;i++)
+            for(int i=1;i<=numtasks-1;i++)
             {
                 MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
             }
@@ -210,7 +210,7 @@ int main(int argc, char **argv)
         if((fp2=fopen("log_file.txt","w+"))==NULL)
         {
             printf("Error opening the log file\n");
-            for(int i=1;i<=numtasks;i++)
+            for(int i=1;i<=numtasks-1;i++)
             {
                 MPI_Send(dummy,1,MPI_CHAR,i,FINISH_TAG,MPI_COMM_WORLD);
             }
@@ -289,9 +289,8 @@ int main(int argc, char **argv)
 
         while(active_workers)
         {
-            MPI_Recv(char_result, (factorial(8) * (8+1) + 50 + 1), MPI_CHAR, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status); //receive the message from the worker which finishes his task the fastest
-            worker=status.MPI_SOURCE;
-            write_to_client_file(char_result,dummy,fp2,numtasks,worker);
+            MPI_Irecv(char_result, (factorial(8) * (8+1) + 50 + 1), MPI_CHAR, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &request); //receive the message from the worker which finishes his task the fastest
+
             if(fgets(commands_string,50,fp1)!=NULL)
             {
                 int valid_string=0;
@@ -329,6 +328,9 @@ int main(int argc, char **argv)
                         }
                         else
                         {
+                            MPI_Wait(&request, &status);
+                            worker=status.MPI_SOURCE;
+                            write_to_client_file(char_result,dummy,fp2,numtasks,worker);
                             MPI_Send(dummy,1,MPI_CHAR,worker,FINISH_TAG,MPI_COMM_WORLD);
                             active_workers--;
                         }
@@ -342,6 +344,9 @@ int main(int argc, char **argv)
                         }
                         else
                         {
+                            MPI_Wait(&request, &status);
+                            worker=status.MPI_SOURCE;
+                            write_to_client_file(char_result,dummy,fp2,numtasks,worker);
                             MPI_Send(dummy,1,MPI_CHAR,worker,FINISH_TAG,MPI_COMM_WORLD);
                             active_workers--;
                             break;
@@ -357,6 +362,9 @@ int main(int argc, char **argv)
                     }
                     sprintf(log_message, "Timestamp %.03f: '%s' received from the command file\n", MPI_Wtime(), commands_string);
                     fprintf(fp2,"%s",log_message);
+                    MPI_Wait(&request, &status);
+                    worker=status.MPI_SOURCE;
+                    write_to_client_file(char_result,dummy,fp2,numtasks,worker);
                     MPI_Send(commands_string,50,MPI_CHAR,worker,WORK_TAG,MPI_COMM_WORLD);
                     sprintf(log_message, "Timestamp %.03f: '%s' sent to worker %d\n", MPI_Wtime(), commands_string, worker);
                     fprintf(fp2,"%s",log_message);
@@ -364,6 +372,9 @@ int main(int argc, char **argv)
             }
             else //if the end of the command file was reached
             {
+                MPI_Wait(&request, &status);
+                worker=status.MPI_SOURCE;
+                write_to_client_file(char_result,dummy,fp2,numtasks,worker);
                 MPI_Send(dummy,1,MPI_CHAR,worker,FINISH_TAG,MPI_COMM_WORLD);
                 active_workers--;
             }
@@ -392,6 +403,7 @@ int main(int argc, char **argv)
         while(1)
         {
             MPI_Recv(commands_string,50,MPI_CHAR,0,MPI_ANY_TAG,MPI_COMM_WORLD, &status); //receive command from the master
+            //printf("Worker: %s\n",commands_string);
             if(status.MPI_TAG == WORK_TAG)
             {
                 //printf("%s\n",commands_string);

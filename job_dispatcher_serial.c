@@ -11,7 +11,7 @@
 
 char permutation[9];
 
-bool isPrime(int n) { //efficient function to check if a number is prime or not
+bool isPrime(long n) { //efficient function to check if a number is prime or not
     if (n <= 1) {
         return false;
     }
@@ -22,7 +22,7 @@ bool isPrime(int n) { //efficient function to check if a number is prime or not
         return false;
     }
 
-    for (int i = 3; i * i <= n; i += 2) {
+    for (long i = 3; i * i <= n; i += 2) {
         if (n % i == 0) {
             return false; // Found a divisor, not prime.
         }
